@@ -65,10 +65,8 @@ export default function VideoMeetComponent() {
     // }
 
     useEffect(() => {
-        console.log("HELLO")
         getPermissions();
-
-    })
+    }, []);
 
     let getDislayMedia = () => {
         if (screen) {
@@ -83,23 +81,16 @@ export default function VideoMeetComponent() {
 
     const getPermissions = async () => {
         try {
-            const videoPermission = await navigator.mediaDevices.getUserMedia({ video: true });
-            if (videoPermission) {
-                setVideoAvailable(true);
-                console.log('Video permission granted');
-            } else {
-                setVideoAvailable(false);
-                console.log('Video permission denied');
-            }
+            const stream = await navigator.mediaDevices.getUserMedia({
+                video: true,
+                audio: true,
+            });
 
-            const audioPermission = await navigator.mediaDevices.getUserMedia({ audio: true });
-            if (audioPermission) {
-                setAudioAvailable(true);
-                console.log('Audio permission granted');
-            } else {
-                setAudioAvailable(false);
-                console.log('Audio permission denied');
-            }
+            const hasVideo = stream.getVideoTracks().length > 0;
+            const hasAudio = stream.getAudioTracks().length > 0;
+
+            setVideoAvailable(hasVideo);
+            setAudioAvailable(hasAudio);
 
             if (navigator.mediaDevices.getDisplayMedia) {
                 setScreenAvailable(true);
@@ -107,17 +98,36 @@ export default function VideoMeetComponent() {
                 setScreenAvailable(false);
             }
 
-            if (videoAvailable || audioAvailable) {
-                const userMediaStream = await navigator.mediaDevices.getUserMedia({ video: videoAvailable, audio: audioAvailable });
-                if (userMediaStream) {
-                    window.localStream = userMediaStream;
-                    if (localVideoref.current) {
-                        localVideoref.current.srcObject = userMediaStream;
-                    }
-                }
+            window.localStream = stream;
+            if (localVideoref.current) {
+                localVideoref.current.srcObject = stream;
             }
         } catch (error) {
-            console.log(error);
+            console.log('Media permission error:', error);
+            setVideoAvailable(false);
+            setAudioAvailable(false);
+
+            try {
+                const videoOnly = await navigator.mediaDevices.getUserMedia({ video: true });
+                setVideoAvailable(videoOnly.getVideoTracks().length > 0);
+                window.localStream = videoOnly;
+            } catch (videoError) {
+                console.log('Video permission unavailable:', videoError);
+            }
+
+            try {
+                const audioOnly = await navigator.mediaDevices.getUserMedia({ audio: true });
+                setAudioAvailable(audioOnly.getAudioTracks().length > 0);
+                if (!window.localStream) {
+                    window.localStream = audioOnly;
+                }
+            } catch (audioError) {
+                console.log('Audio permission unavailable:', audioError);
+            }
+
+            if (localVideoref.current && window.localStream) {
+                localVideoref.current.srcObject = window.localStream;
+            }
         }
     };
 
@@ -279,7 +289,7 @@ export default function VideoMeetComponent() {
         socketRef.current.on('signal', gotMessageFromServer)
 
         socketRef.current.on('connect', () => {
-            socketRef.current.emit('join-call', window.location.href)
+            socketRef.current.emit('join-call', window.location.pathname)
             socketIdRef.current = socketRef.current.id
 
             socketRef.current.on('chat-message', addMessage)
@@ -442,6 +452,10 @@ export default function VideoMeetComponent() {
 
     let connect = () => {
         setAskForUsername(false);
+        if (!window.localStream) {
+            getPermissions().then(() => getMedia());
+            return;
+        }
         getMedia();
     }
 

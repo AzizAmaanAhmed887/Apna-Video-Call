@@ -7,6 +7,12 @@ import '../App.css'
 function LandingPage() {
 
   const router = useNavigate();
+
+  const handleGuestJoin = () => {
+    const guestRoomId = `guest-${Date.now()}`;
+    router(`/${guestRoomId}`);
+  };
+
   return (
     <div className='landingPageContainer'>
       <nav>
@@ -14,7 +20,7 @@ function LandingPage() {
           <h2>Apna video call</h2>
         </div>
         <div className="navlist">
-          <p onClick={() => { router("/room/aasfsadf") }}>Join as Guests</p>
+          <p onClick={handleGuestJoin}>Join as Guests</p>
           <p onClick={() => { router("/auth") }}>Register</p>
           <div className="button">
             <p onClick={() => { router("/auth") }}>Login</p>

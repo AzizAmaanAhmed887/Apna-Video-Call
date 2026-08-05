@@ -24,6 +24,7 @@ function App() {
             <Route path='/history' element={<History />} />
 
             <Route path='/:url' element={<VideoMeetComponent />} />
+            <Route path='/room/:roomId' element={<VideoMeetComponent />} />
           </Routes>
 
         </AuthProvider>
