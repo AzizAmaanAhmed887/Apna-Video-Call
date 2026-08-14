@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import io from "socket.io-client";
 import { Badge, IconButton, TextField } from '@mui/material';
-import { Button } from '@mui/material';
 import VideocamIcon from '@mui/icons-material/Videocam';
 import VideocamOffIcon from '@mui/icons-material/VideocamOff'
 import styles from "../styles/videoComponent.module.css";
@@ -59,25 +58,14 @@ export default function VideoMeetComponent() {
     let [videos, setVideos] = useState([])
 
     // TODO
-    // if(isChrome() === false) {
-
-
+    // const isChrome = () => {
+    //     const userAgent = navigator.userAgent.toLowerCase();
+    //     return /chrome/.test(userAgent) && !/edge|edg|opr|opera/.test(userAgent);
     // }
+    // if (isChrome() === false) {
 
-    useEffect(() => {
-        getPermissions();
-    }, []);
-
-    let getDislayMedia = () => {
-        if (screen) {
-            if (navigator.mediaDevices.getDisplayMedia) {
-                navigator.mediaDevices.getDisplayMedia({ video: true, audio: true })
-                    .then(getDislayMediaSuccess)
-                    .then((stream) => { })
-                    .catch((e) => console.log(e))
-            }
-        }
-    }
+    //     alert("This application is best viewed in Google Chrome. Please switch to Google Chrome for the best experience.");
+    // }
 
     const getPermissions = async () => {
         try {
@@ -130,6 +118,23 @@ export default function VideoMeetComponent() {
             }
         }
     };
+
+    useEffect(() => {
+        getPermissions();
+    }, []);
+
+    let getDislayMedia = () => {
+        if (screen) {
+            if (navigator.mediaDevices.getDisplayMedia) {
+                navigator.mediaDevices.getDisplayMedia({ video: true, audio: true })
+                    .then(getDislayMediaSuccess)
+                    .then((stream) => { })
+                    .catch((e) => console.log(e))
+            }
+        }
+    }
+
+
 
     useEffect(() => {
         if (video !== undefined && audio !== undefined) {
@@ -414,7 +419,7 @@ export default function VideoMeetComponent() {
         try {
             let tracks = localVideoref.current.srcObject.getTracks()
             tracks.forEach(track => track.stop())
-        } catch (e) { }
+        } catch (e) { console.log(e) }
         window.location.href = "/"
     }
 
@@ -461,20 +466,117 @@ export default function VideoMeetComponent() {
 
 
     return (
-        <div>
+        <div style={{ minHeight: '100vh', background: 'linear-gradient(180deg, rgba(14, 25, 55, 0.95) 0%, rgba(8, 14, 30, 0.98) 100%)' }}>
 
             {askForUsername === true ?
 
-                <div>
+                <div style={{
+                    minHeight: '100vh',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '2rem',
+                    padding: '2rem'
+                }}>
+                    <h2 style={{
+                        fontSize: 'clamp(1.8rem, 4vw, 3rem)',
+                        color: '#ffb56b',
+                        textAlign: 'center',
+                        fontWeight: 700,
+                        letterSpacing: '0.05em',
+                        margin: 0,
+                        marginBottom: '1rem'
+                    }}>Enter the Lobby</h2>
 
+                    <div style={{
+                        background: 'rgba(255, 255, 255, 0.08)',
+                        borderRadius: '12px',
+                        padding: '2rem',
+                        backdropFilter: 'blur(14px)',
+                        border: '1px solid rgba(255, 255, 255, 0.1)',
+                        maxWidth: '500px',
+                        width: '100%',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '1.5rem'
+                    }}>
+                        <TextField
+                            label="Enter Your Username"
+                            value={username}
+                            onChange={e => setUsername(e.target.value)}
+                            variant="outlined"
+                            fullWidth
+                            placeholder="Your name"
+                            sx={{
+                                '& .MuiOutlinedInput-root': {
+                                    color: 'rgba(255, 255, 255, 0.95)',
+                                    '& fieldset': {
+                                        borderColor: 'rgba(255, 255, 255, 0.15)',
+                                    },
+                                    '&:hover fieldset': {
+                                        borderColor: '#ffb56b',
+                                    },
+                                    '&.Mui-focused fieldset': {
+                                        borderColor: '#ffb56b',
+                                        boxShadow: '0 0 0 3px rgba(255, 152, 57, 0.2)',
+                                    },
+                                },
+                                '& .MuiOutlinedInput-input': {
+                                    color: 'rgba(255, 255, 255, 0.95)',
+                                    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                                },
+                                '& .MuiInputLabel-root': {
+                                    color: 'rgba(255, 255, 255, 0.7)',
+                                    '&.Mui-focused': {
+                                        color: '#ffb56b',
+                                    },
+                                },
+                            }}
+                        />
+                        <button
+                            onClick={connect}
+                            style={{
+                                padding: '1rem 2rem',
+                                borderRadius: '8px',
+                                border: 'none',
+                                background: 'linear-gradient(135deg, #ff9839 0%, #ffb56b 100%)',
+                                color: '#0d1220',
+                                fontSize: '1rem',
+                                fontWeight: 700,
+                                cursor: 'pointer',
+                                transition: 'all 0.3s ease',
+                                boxShadow: '0 12px 40px rgba(255, 152, 57, 0.25)',
+                                textTransform: 'uppercase',
+                                letterSpacing: '0.03em'
+                            }}
+                            onMouseEnter={e => {
+                                e.target.style.transform = 'translateY(-2px)';
+                                e.target.style.boxShadow = '0 16px 50px rgba(255, 152, 57, 0.35)';
+                            }}
+                            onMouseLeave={e => {
+                                e.target.style.transform = 'translateY(0)';
+                                e.target.style.boxShadow = '0 12px 40px rgba(255, 152, 57, 0.25)';
+                            }}
+                        >
+                            Connect to Meeting
+                        </button>
+                    </div>
 
-                    <h2>Enter into Lobby </h2>
-                    <TextField id="outlined-basic" label="Username" value={username} onChange={e => setUsername(e.target.value)} variant="outlined" />
-                    <Button variant="contained" onClick={connect}>Connect</Button>
-
-
-                    <div>
-                        <video ref={localVideoref} autoPlay muted></video>
+                    <div style={{
+                        maxWidth: '500px',
+                        width: '100%',
+                        borderRadius: '12px',
+                        overflow: 'hidden',
+                        background: 'rgba(0, 0, 0, 0.3)',
+                        border: '2px solid rgba(255, 152, 57, 0.3)',
+                        aspectRatio: '16 / 9'
+                    }}>
+                        <video ref={localVideoref} autoPlay muted style={{
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'cover'
+                        }}></video>
                     </div>
 
                 </div> :
@@ -493,19 +595,76 @@ export default function VideoMeetComponent() {
 
                                     console.log(messages)
                                     return (
-                                        <div style={{ marginBottom: "20px" }} key={index}>
-                                            <p style={{ fontWeight: "bold" }}>{item.sender}</p>
+                                        <div key={index}>
+                                            <p>{item.sender}</p>
                                             <p>{item.data}</p>
                                         </div>
                                     )
-                                }) : <p>No Messages Yet</p>}
+                                }) : <p style={{ textAlign: 'center', color: 'rgba(255, 255, 255, 0.5)' }}>No Messages Yet</p>}
 
 
                             </div>
 
                             <div className={styles.chattingArea}>
-                                <TextField value={message} onChange={(e) => setMessage(e.target.value)} id="outlined-basic" label="Enter Your chat" variant="outlined" />
-                                <Button variant='contained' onClick={sendMessage}>Send</Button>
+                                <TextField
+                                    value={message}
+                                    onChange={(e) => setMessage(e.target.value)}
+                                    label="Type a message..."
+                                    variant="outlined"
+                                    size="small"
+                                    fullWidth
+                                    sx={{
+                                        '& .MuiOutlinedInput-root': {
+                                            color: 'rgba(255, 255, 255, 0.95)',
+                                            '& fieldset': {
+                                                borderColor: 'rgba(255, 255, 255, 0.15)',
+                                            },
+                                            '&:hover fieldset': {
+                                                borderColor: '#ffb56b',
+                                            },
+                                            '&.Mui-focused fieldset': {
+                                                borderColor: '#ffb56b',
+                                            },
+                                        },
+                                        '& .MuiOutlinedInput-input': {
+                                            color: 'rgba(255, 255, 255, 0.95)',
+                                            backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                                        },
+                                        '& .MuiInputLabel-root': {
+                                            color: 'rgba(255, 255, 255, 0.7)',
+                                            '&.Mui-focused': {
+                                                color: '#ffb56b',
+                                            },
+                                        },
+                                    }}
+                                />
+                                <button
+                                    onClick={sendMessage}
+                                    style={{
+                                        padding: '0.7rem 1.2rem',
+                                        background: 'linear-gradient(135deg, #ff9839 0%, #ffb56b 100%)',
+                                        color: '#0d1220',
+                                        border: 'none',
+                                        borderRadius: '8px',
+                                        fontWeight: 700,
+                                        cursor: 'pointer',
+                                        transition: 'all 0.3s ease',
+                                        boxShadow: '0 8px 24px rgba(255, 152, 57, 0.25)',
+                                        textTransform: 'uppercase',
+                                        letterSpacing: '0.03em',
+                                        fontSize: '0.85rem'
+                                    }}
+                                    onMouseEnter={e => {
+                                        e.target.style.transform = 'translateY(-2px)';
+                                        e.target.style.boxShadow = '0 12px 32px rgba(255, 152, 57, 0.35)';
+                                    }}
+                                    onMouseLeave={e => {
+                                        e.target.style.transform = 'translateY(0)';
+                                        e.target.style.boxShadow = '0 8px 24px rgba(255, 152, 57, 0.25)';
+                                    }}
+                                >
+                                    Send
+                                </button>
                             </div>
 
 
@@ -514,24 +673,64 @@ export default function VideoMeetComponent() {
 
 
                     <div className={styles.buttonContainers}>
-                        <IconButton onClick={handleVideo} style={{ color: "white" }}>
+                        <IconButton
+                            onClick={handleVideo}
+                            sx={{
+                                color: video === true ? '#ffb56b' : 'rgba(255, 255, 255, 0.7)',
+                                '&:hover': { color: '#ffb56b' }
+                            }}
+                        >
                             {(video === true) ? <VideocamIcon /> : <VideocamOffIcon />}
                         </IconButton>
-                        <IconButton onClick={handleEndCall} style={{ color: "red" }}>
+                        <IconButton
+                            onClick={handleEndCall}
+                            sx={{
+                                color: '#ff6b6b',
+                                '&:hover': { color: '#ff5252' }
+                            }}
+                        >
                             <CallEndIcon />
                         </IconButton>
-                        <IconButton onClick={handleAudio} style={{ color: "white" }}>
+                        <IconButton
+                            onClick={handleAudio}
+                            sx={{
+                                color: audio === true ? '#ffb56b' : 'rgba(255, 255, 255, 0.7)',
+                                '&:hover': { color: '#ffb56b' }
+                            }}
+                        >
                             {audio === true ? <MicIcon /> : <MicOffIcon />}
                         </IconButton>
 
                         {screenAvailable === true ?
-                            <IconButton onClick={handleScreen} style={{ color: "white" }}>
+                            <IconButton
+                                onClick={handleScreen}
+                                sx={{
+                                    color: screen === true ? '#ffb56b' : 'rgba(255, 255, 255, 0.7)',
+                                    '&:hover': { color: '#ffb56b' }
+                                }}
+                            >
                                 {screen === true ? <ScreenShareIcon /> : <StopScreenShareIcon />}
                             </IconButton> : <></>}
 
-                        <Badge badgeContent={newMessages} max={999} color='orange'>
-                            <IconButton onClick={() => setModal(!showModal)} style={{ color: "white" }}>
-                                <ChatIcon />                        </IconButton>
+                        <Badge badgeContent={newMessages} max={999} sx={{
+                            '& .MuiBadge-badge': {
+                                backgroundColor: '#ff9839',
+                                color: '#0d1220',
+                                fontWeight: 700
+                            }
+                        }}>
+                            <IconButton
+                                onClick={() => {
+                                    setModal(!showModal);
+                                    setNewMessages(0);
+                                }}
+                                sx={{
+                                    color: 'rgba(255, 255, 255, 0.7)',
+                                    '&:hover': { color: '#ffb56b' }
+                                }}
+                            >
+                                <ChatIcon />
+                            </IconButton>
                         </Badge>
 
                     </div>
@@ -540,7 +739,7 @@ export default function VideoMeetComponent() {
                     <video className={styles.meetUserVideo} ref={localVideoref} autoPlay muted></video>
 
                     <div className={styles.conferenceView}>
-                        {videos.map((video) => (
+                        {videos.filter(video => video.socketId !== socketIdRef.current).map((video) => (
                             <div key={video.socketId}>
                                 <video
 
