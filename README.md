@@ -1,9 +1,9 @@
 # Online Video Conferencing Platform
 
-Tech Stack
+## Tech Stack
 
-Features
+## Features
 
-Architecture / Working
+## Architecture / Working
 
 ## Screenshots
