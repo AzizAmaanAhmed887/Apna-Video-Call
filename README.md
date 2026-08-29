@@ -14,5 +14,6 @@
 ### Login Page
 ![Login Page](./Login-Signup.png)
 
-### Dashboard
-![Dashboard](./assets/dashboard.png)
+### Meeting Room
+![Meeting-Room](./MeetingRoom.png)
+![Meeting-Room](./MeetingRoom2.png)
