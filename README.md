@@ -9,7 +9,7 @@
 ## Screenshots
 
 ### Home Page
-![Home Page]([./assets/home.png](https://github.com/AzizAmaanAhmed887/Apna-Video-Call/blob/d59f08bbed774e0850b9bad24b2ed228b4e36175/Screenshot%202026-08-29%20133233.png))
+![Home Page](./assets/home.png)
 
 ### Login Page
 ![Login Page](./assets/login.png)
