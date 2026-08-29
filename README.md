@@ -12,7 +12,7 @@
 ![Home Page](./Homepage.png)
 
 ### Login Page
-![Login Page](./assets/login.png)
+![Login Page](./Login-Signup.png)
 
 ### Dashboard
 ![Dashboard](./assets/dashboard.png)
