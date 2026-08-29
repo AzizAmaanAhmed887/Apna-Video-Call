@@ -9,7 +9,7 @@
 ## Screenshots
 
 ### Home Page
-![Home Page](./assets/home.png)
+![Home Page](Screenshot 2026-08-29 133233.png)
 
 ### Login Page
 ![Login Page](./assets/login.png)
